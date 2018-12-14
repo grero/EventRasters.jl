@@ -1,4 +1,5 @@
 using EventRasters
+using StatsBase
 using Test
 
 @testset "Basic" begin
@@ -28,3 +29,15 @@ end
     @test raster.events ≈ [0.0, 0.2, 0.0, 0.1, 0.1]
     @test raster.trialidx == [1, 1, 2, 2, 3]
 end
+
+@testset "EventHistogram" begin
+    events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    markers = [1,2,3]
+    tmin,tmax = (0.0, 0.3)
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+    hh = fit(EventRasters.EventHistogram, raster, range(tmin,stop=tmax, length=5))
+    @test hh.weights[:,1] ≈ [1.0, 0.0, 1.0,0.0]
+    @test hh.weights[:,2] ≈ [1.0, 1.0, 0.0,0.0]
+    @test hh.weights[:,3] ≈ [0.0, 1.0, 0.0,0.0]
+end
+

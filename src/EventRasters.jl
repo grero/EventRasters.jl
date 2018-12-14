@@ -1,4 +1,5 @@
 module EventRasters
+using StatsBase
 
 include("types.jl")
 

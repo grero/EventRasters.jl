@@ -19,3 +19,12 @@ using Test
         @test trial_index == [1, 1, 2, 2, 3]
     end
 end
+
+@testset "Type wrapper" begin
+    events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    markers = [1,2,3]
+    tmin,tmax = (0.0, 0.3)
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+    @test raster.events ≈ [0.0, 0.2, 0.0, 0.1, 0.1]
+    @test raster.trialidx == [1, 1, 2, 2, 3]
+end

@@ -25,7 +25,9 @@ function StatsBase.fit(::Type{EventHistogram}, raster::Raster{T,T2}, edges::E;is
     for i in 1:nevents
         idx = StatsBase.binindex(h,raster.events[i]) 
         tidx = raster.trialidx[i]
-        h.weights[idx...,tidx] += 1.0
+        if checkbounds(Bool, h.weights, idx...,tidx)
+            @inbounds h.weights[idx...,tidx] += 1.0
+        end
     end
     h
 end

@@ -41,3 +41,14 @@ end
     @test hh.weights[:,3] ≈ [0.0, 1.0, 0.0,0.0]
 end
 
+@testset "Sorting" begin
+    events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    markers = [1,2,3]
+    tmin,tmax = (0.0, 0.3)
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+    trial_labels = [2,1,3]
+    sraster = sort(raster,trial_labels)
+    @test sraster.events ≈ [0.0, 0.1, 0.0, 0.2, 0.1]
+    @test sraster.trialidx == [1, 1, 2, 2, 3]
+    @test sraster.markers == [2,1,3] 
+end

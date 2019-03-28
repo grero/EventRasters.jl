@@ -1,5 +1,6 @@
 module EventRasters
 using StatsBase
+import Base.sort
 
 include("types.jl")
 
@@ -40,5 +41,24 @@ end
 function Raster(events::Vector{T}, markers::Vector{T2}, tmin::Real, tmax::Real) where T <: Real where T2 <: Real
     aligned_events, trialindex = alignto(events, markers, tmin,tmax)
     Raster(aligned_events, trialindex, markers, tmin, tmax)
+end
+
+"""
+Sort `raster` by trials using the labels `sortby`.
+"""
+function Base.sort(raster::Raster, sortby::AbstractVector{T},;rev=false) where T <: Real
+    sidx = sortperm(raster.trialidx, alg=MergeSort, by=s->sortby[s];rev=rev)
+    trialidx_s = raster.trialidx[sidx]
+    tidx = 1
+    tidx_s = trialidx_s[1]
+    y = fill!(similar(sidx),0)
+    for i in 1:length(y)
+        if trialidx_s[i] != tidx_s
+            tidx_s = trialidx_s[i]
+            tidx += 1
+        end
+        y[i] = tidx  # set the trialidx to the new value
+    end
+    Raster(raster.events[sidx], y, raster.markers[sortperm(sortby,rev=rev)], raster.tmin, raster.tmax)
 end
 end # module

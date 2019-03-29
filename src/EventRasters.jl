@@ -21,19 +21,13 @@ function alignto(events::Vector{T}, marker::Vector{T2}, tmin::Real, tmax::Real) 
     end
     aligned_events = T[]
     trial_index = Int64[]
-    i = 1 
     nevents = length(events)
     nmarkers = length(marker)
-    ii = searchsortedfirst(sevents, smarker[1] + tmin)
-    tidx = 1
-    while (ii <= nevents) && (tidx <= nmarkers)
+    for tidx in 1:nmarkers
         ii = searchsortedfirst(sevents, smarker[tidx] + tmin)
-        while (ii <= nevents) && sevents[ii] < smarker[tidx]+tmax
-            push!(trial_index, tidx)
-            push!(aligned_events, sevents[ii] - smarker[tidx])
-            ii += 1
-        end
-        tidx += 1
+        jj = searchsortedlast(sevents, smarker[tidx] + tmax)
+        append!(aligned_events, sevents[ii:jj] .- smarker[tidx])
+        append!(trial_index, fill(tidx, jj-ii+1))
     end
     aligned_events, trial_index
 end

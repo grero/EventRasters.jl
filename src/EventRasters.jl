@@ -53,6 +53,9 @@ function Base.sort(raster::Raster, sortby::AbstractVector{T},;rev=false) where T
         end
         y[i] = tidx  # set the trialidx to the new value
     end
-    Raster(raster.events[sidx], y, raster.markers[sortperm(sortby,rev=rev)], raster.tmin, raster.tmax)
+    #we need to sort the markers, leaving out the ones that were not used
+    _tidx = sort(unique(raster.trialidx),by=s->sortby[s], rev=rev)
+    _markers = raster.markers[_tidx]
+    Raster(raster.events[sidx], y, _markers, raster.tmin, raster.tmax)
 end
 end # module

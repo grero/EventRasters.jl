@@ -4,7 +4,7 @@ using Test
 
 @testset "Basic" begin
     @testset "Sorted" begin
-        events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+        events = [1.0,1.2,1.4, 2.0,2.1, 3.1, 3.4, 3.5,3.7]
         markers = [1,2,3]
         tmin,tmax = (0.0, 0.3)
         aligned_events, trial_index = EventRasters.alignto(events, markers, tmin,tmax)
@@ -12,7 +12,7 @@ using Test
         @test trial_index == [1, 1, 2, 2, 3]
     end
     @testset "Unsorted" begin
-        events = [3.1, 1.2, 3.5, 2.1, 1.3, 3.6, 2.0, 1.0, 3.4]
+        events = [3.1, 1.2, 3.5, 2.1, 1.4, 3.6, 2.0, 1.0, 3.4]
         markers = [1,2,3]
         tmin,tmax = (0.0, 0.3)
         aligned_events, trial_index = EventRasters.alignto(events, markers, tmin,tmax)
@@ -22,7 +22,7 @@ using Test
 end
 
 @testset "Type wrapper" begin
-    events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    events = [1.0,1.2,1.4, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
     markers = [1,2,3]
     tmin,tmax = (0.0, 0.3)
     raster = EventRasters.Raster(events, markers, tmin,tmax)
@@ -31,7 +31,7 @@ end
 end
 
 @testset "EventHistogram" begin
-    events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    events = [1.0,1.2,1.4, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
     markers = [1,2,3]
     tmin,tmax = (-0.1, 0.3)
     raster = EventRasters.Raster(events, markers, tmin,tmax)
@@ -41,14 +41,15 @@ end
     @test hh.weights[:,3] ≈ [0.0, 1.0, 0.0,0.0]
 end
 
+#TODO: Make sure this also works when there are gaps in the trialidx
 @testset "Sorting" begin
-    events = [1.0,1.2,1.3, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
-    markers = [1,2,3]
+    events = [1.0,1.2,1.4, 2.0,2.1, 4.1, 4.4, 4.5,4.6]
+    markers = [1.0,2.0,3.0,4.0]
     tmin,tmax = (0.0, 0.3)
     raster = EventRasters.Raster(events, markers, tmin,tmax)
-    trial_labels = [2,1,3]
+    trial_labels = [2,4,3,1]
     sraster = sort(raster,trial_labels)
-    @test sraster.events ≈ [0.0, 0.1, 0.0, 0.2, 0.1]
-    @test sraster.trialidx == [1, 1, 2, 2, 3]
-    @test sraster.markers == [2,1,3] 
+    @test sraster.events ≈ [0.1, 0.0, 0.2, 0.0, 0.1]
+    @test sraster.trialidx == [1, 2, 2, 3, 3]
+    @test sraster.markers ≈ [4.0, 1.0, 2.0]
 end

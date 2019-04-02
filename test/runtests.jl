@@ -53,3 +53,24 @@ end
     @test sraster.trialidx == [1, 2, 2, 3, 3]
     @test sraster.markers ≈ [4.0, 1.0, 2.0]
 end
+
+@testset "Gracious fail" begin
+    #test for on events
+    events = Float64[]
+    markers = [1.0,2.0,3.0,4.0]
+    tmin,tmax = (0.0, 0.3)
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+    @test isempty(raster.events)
+    
+    #test for no trials
+    events = [1.0,1.2,1.4, 2.0,2.1, 4.1, 4.4, 4.5,4.6]
+    markers = Float64[]
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+    @test isempty(raster.events)
+
+    #test for empty time range
+    events = [1.1,1.2,1.4, 2.01,2.1, 4.1, 4.4, 4.5,4.6]
+    markers = [1.0,2.0,3.0,4.0]
+    tmin,tmax = (0.0, 0.0)
+    @test isempty(raster.events)
+end

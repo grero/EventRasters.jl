@@ -1,7 +1,7 @@
 name = "EventRasters"
 uuid = "3d9f1ba8-ff48-11e8-3a02-0b3de68f1194"
 authors = ["Roger Herikstad <roger.herikstad@gmail.com>"]
-version = "0.2.0"
+version = "0.3.0"
 
 [deps]
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"

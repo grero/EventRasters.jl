@@ -38,16 +38,20 @@ function Raster(events::Vector{T}, markers::Vector{T2}, tmin::Real, tmax::Real) 
 end
 
 function Base.getindex(raster::Raster, idx::AbstractVector{Int64})
-    trialidx = raster.trialidx[idx]
-    strialidx = unique(raster.trialidx)
-    dtrialidx = unique(trialidx)
-    markers = fill(zero(eltype(raster.markers)),length(dtrialidx))
-    for (i,didx) in enumerate(dtrialidx)
-        _idx = findfirst(x->x==didx, strialidx)
-        if _idx != nothing
-            markers[i] = raster.markers[_idx]
+    qtrialidx = raster.trialidx[idx]
+    trialidx = fill(zero(Int64), length(idx))
+    trialidx[1] = 1
+    _tidx = 1
+    midx = fill(false, length(raster.markers))
+    midx[qtrialidx[1]] = true
+    for i in 2:length(idx)
+        if qtrialidx[i] != qtrialidx[i-1]
+            _tidx += 1
+            midx[qtrialidx[i]] = true
         end
+        trialidx[i] = _tidx
     end
+    markers = raster.markers[midx]
     events = raster.events[idx]
     Raster(events, trialidx, markers, raster.tmin, raster.tmax)
 end

@@ -37,6 +37,22 @@ function Raster(events::Vector{T}, markers::Vector{T2}, tmin::Real, tmax::Real) 
     Raster(aligned_events, trialindex, markers, tmin, tmax)
 end
 
+function Base.getindex(raster::Raster, idx::AbstractVector{Int64})
+    trialidx = raster.trialidx[idx]
+    strialidx = unique(raster.trialidx)
+    dtrialidx = unique(trialidx)
+    markers = fill(zero(eltype(raster.markers)),length(dtrialidx))
+    for (i,didx) in enumerate(dtrialidx)
+        _idx = findfirst(x->x==didx, strialidx)
+        if _idx != nothing
+            markers[i] = raster.markers[_idx]
+        end
+    end
+    events = raster.events[idx]
+    Raster(events, trialidx, markers, raster.tmin, raster.tmax)
+end
+
+
 """
 Sort `raster` by trials using the labels `sortby`.
 """

@@ -74,3 +74,14 @@ end
     tmin,tmax = (0.0, 0.0)
     @test isempty(raster.events)
 end
+
+@testset "Indexing" begin
+    events = [1.0,1.2,1.4, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    markers = [1,2,3]
+    tmin,tmax = (0.0, 0.3)
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+    uraster = raster[[1,2,5]]
+    @test uraster.events ≈ [0.0, 0.2, 0.1]
+    @test uraster.trialidx == [1,1,3]
+    @test uraster.markers == [1,3]
+end

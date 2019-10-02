@@ -56,6 +56,14 @@ function Base.getindex(raster::Raster, idx::AbstractVector{Int64})
     Raster(events, trialidx, markers, raster.tmin, raster.tmax)
 end
 
+function Base.filter(pred, raster::Raster)
+	qidx = findall(pred, raster.trialidx)
+	tidx = findall(pred, unique(raster.trialidx))
+	events = raster.events[qidx]
+	tmin, tmax = extrema(events)
+	Raster(events, raster.trialidx[qidx], raster.markers[tidx], tmin, tmax)
+end
+
 
 """
 Sort `raster` by trials using the labels `sortby`.

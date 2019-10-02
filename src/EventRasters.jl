@@ -61,7 +61,7 @@ function Base.filter(pred, raster::Raster)
 	tidx = findall(pred, unique(raster.trialidx))
 	events = raster.events[qidx]
 	tmin, tmax = extrema(events)
-	Raster(events, raster.trialidx[qidx], raster.markers[tidx], tmin, tmax)
+	Raster(events, raster.trialidx[qidx], raster.markers, tmin, tmax)
 end
 
 

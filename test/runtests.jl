@@ -94,5 +94,5 @@ end
 	uraster = filter(in([1,3]), raster)
 	@test uraster.events ≈ [0.0,0.2,0.1]
 	@test uraster.trialidx == [1,1,3]
-	@test uraster.markers == [1,3]
+	@test uraster.markers == [1,2,3]
 end

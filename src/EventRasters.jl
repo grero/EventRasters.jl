@@ -86,4 +86,21 @@ function Base.sort(raster::Raster, sortby::AbstractVector{T},;rev=false) where T
     _markers = raster.markers[_tidx]
     Raster(raster.events[sidx], y, _markers, raster.tmin, raster.tmax)
 end
+
+"""
+Get the first event in each trial with a timestamp larger than or equal to t0
+"""
+function firstevent(raster::Raster;t0=0.0)
+	trials = unique(raster.trialidx)
+	sort!(trials)
+	events = fill(NaN, length(trials))
+	for (i,t) in enumerate(trials)
+		tidx = findall(raster.trialidx.==t)
+		ii = searchsortedfirst(raster.events[tidx], t0)
+		if 0 < ii <= length(tidx)
+			events[i] = raster.events[tidx[ii]]
+		end
+	end
+	events
+end
 end # module

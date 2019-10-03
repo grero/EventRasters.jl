@@ -96,3 +96,15 @@ end
 	@test uraster.trialidx == [1,1,3]
 	@test uraster.markers == [1,2,3]
 end
+
+@testset "First event" begin
+    events = [1.0,1.2,1.4, 2.0,2.1, 3.1, 3.4, 3.5,3.6]
+    markers = [1,2,3]
+    tmin,tmax = (0.0, 0.3)
+    raster = EventRasters.Raster(events, markers, tmin,tmax)
+	first_events = EventRasters.firstevent(raster)
+	@test first_events ≈ [0.0, 0.0, 0.1]
+	first_events = EventRasters.firstevent(raster,t0=0.1)
+	@test first_events ≈ [0.2, 0.1, 0.1]
+end
+
